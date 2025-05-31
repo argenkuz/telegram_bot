@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post">
+    <p>Пароль: <input type="password" name="password"></p>
+    <button type="submit">Войти</button>
+    {% if error %}
+        <p style="color:red">{{ error }}</p>
+    {% endif %}
+</form>
+{% endblock %}

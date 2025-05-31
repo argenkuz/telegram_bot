@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Ключевые слова</h2>
+<ul>
+{% for kw in keywords %}
+    <li>{{ kw.word }} ({{ kw.category }})
+        <form method="post" action="/delete_keyword" style="display:inline">
+            <input type="hidden" name="word_id" value="{{ kw.id }}">
+            <button type="submit">Удалить</button>
+        </form>
+    </li>
+{% endfor %}
+</ul>
+
+<h3>Добавить новое:</h3>
+<form method="post" action="/add_keyword">
+    Слово: <input type="text" name="word">
+    Категория: <input type="text" name="category">
+    <button type="submit">Добавить</button>
+</form>
+
+<h2>Активные пользователи</h2>
+<ul>
+{% for u in active_users %}
+    <li>{{ u.username or u.telegram_id }}</li>
+{% endfor %}
+</ul>
+
+<h2>Все пользователи</h2>
+<ul>
+{% for u in users %}
+    <li>{{ u.username or u.telegram_id }} — trial до {{ u.trial_end }}{% if u.subscription_end %}, подписка до {{ u.subscription_end }}{% endif %}</li>
+{% endfor %}
+</ul>
+{% endblock %}
