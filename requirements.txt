@@ -3,4 +3,7 @@ SQLAlchemy==2.*
 aiosqlite
 python-dotenv
 greenlet
-fastapi jinja2 aiofiles uvicorn
+fastapi uvicorn jinja2 sqlalchemy python-dotenv
+
+itsdangerous
+python-multipart
