@@ -8,6 +8,7 @@ from handlers import trial_flow
 from handlers import guide
 from handlers import support_callback
 from handlers import subscription
+from handlers.user.referral import router as referral_router
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -17,6 +18,7 @@ dp.include_router(trial_flow.router)
 dp.include_router(guide.router)
 dp.include_router(support_callback.router)
 dp.include_router(subscription.router)
+dp.include_router(referral_router)
 async def main():
     await init_db()
     await dp.start_polling(bot)

@@ -5,6 +5,8 @@ from datetime import datetime
 from database.db import async_session
 from database.models import User
 from aiogram.types import CallbackQuery
+from utils.referral_utils import notify_referrer_about_new_referral
+from keyboards.main import get_main_keyboard
 
 
 router = Router()
@@ -44,16 +46,18 @@ async def start_handler(message: Message):
                 if referrer:
                     referrer.referral_count = (referrer.referral_count or 0) + 1
                     referrer.activated_referrals = (referrer.activated_referrals or 0) + 1
+                    await session.commit()
+
+                    # Уведомление реферера о новом реферале
+                    await notify_referrer_about_new_referral(
+                        message.bot,
+                        referrer_telegram_id, 
+                        message.from_user.username
+                    )
 
             await session.commit()
 
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🎁 Бесплатно на 3 дня", callback_data="free_trial")],
-        [InlineKeyboardButton(text="📢 DIGDI канал", url="https://t.me/digidichannel")],
-        [InlineKeyboardButton(text="💳 Оплатить подписку", callback_data="pay")],
-        [InlineKeyboardButton(text="📘 Руководство", callback_data="guide")],
-        [InlineKeyboardButton(text="🛠 ТЕХ ПОДДЕРЖКА", callback_data="support")]
-    ])
+    keyboard = get_main_keyboard()  # This includes the referral button
 
     await message.answer(
         "👋 Добро пожаловать!\nВот что я умею:\n\n"

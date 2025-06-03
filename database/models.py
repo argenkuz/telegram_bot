@@ -1,6 +1,6 @@
 # database/models.py
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey, Column, BigInteger
 from datetime import datetime
 
 class Base(DeclarativeBase):
@@ -9,17 +9,23 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    telegram_id: Mapped[int] = mapped_column(unique=True)
-    username: Mapped[str] = mapped_column(nullable=True)
-    registered_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
-    trial_end: Mapped[str] = mapped_column(nullable=True)
-    is_subscribed: Mapped[bool] = mapped_column(default=False)
-
-    # ➕ Для реферальной системы:
-    referral_count: Mapped[int] = mapped_column(default=0)
-    activated_referrals: Mapped[int] = mapped_column(default=0)
-    referrer_id: Mapped[int] = mapped_column(nullable=True)
+    id = Column(Integer, primary_key=True)
+    telegram_id = Column(BigInteger, unique=True, nullable=False)
+    username = Column(String)
+    registered_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Add the subscription fields to the model
+    trial_end = Column(DateTime, nullable=True)
+    is_subscribed = Column(Boolean, default=False) 
+    subscription_end = Column(DateTime, nullable=True)
+    
+    # Add referral system fields
+    referrer_id = Column(BigInteger, nullable=True)
+    referral_count = Column(Integer, default=0)
+    activated_referrals = Column(Integer, default=0)
+    referral_rewards_earned = Column(Integer, default=0)
+    referral_rewards_used = Column(Integer, default=0)
+    is_activated_referral = Column(Boolean, default=False)
 
     subscriptions = relationship("Subscription", back_populates="user")
 
